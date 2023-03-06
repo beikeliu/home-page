@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>聚合导航</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 25vh;
+      box-sizing: border-box;
+      height: 100vh;
+    }
+
+    form {
+      padding-top: 20px;
+    }
+
+    section {
+      width: 600px;
+      height: 44px;
+      border: 1px solid #dfe1e5;
+      border-radius: 24px;
+      position: relative;
+    }
+
+    input,
+    input:focus {
+      width: calc(100% - 80px);
+      height: 100%;
+      background: none;
+      outline: none;
+      border: none;
+      font-size: 18px;
+      padding-left: 60px;
+      padding-right: 20px;
+    }
+
+    svg {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <main id="main"></main>
+  <script>
+    const OPTIONS = [
+      {
+        title: "Google",
+        url: "https://www.google.com.hk/search",
+        key: "q"
+      },
+      {
+        title: "Bing",
+        url: "https://www.bing.com/search",
+        key: "q"
+      },
+      {
+        title: "Baidu",
+        url: "https://www.baidu.com/s",
+        key: "wd"
+      }
+    ]
+
+    function createHTML(i) {
+      let action, name, placeholder;
+      OPTIONS.forEach(({ title, url, key }, index) => {
+        if (i === index) {
+          action = url;
+          name = key;
+          placeholder = title;
+        }
+      })
+      main.innerHTML = `
+      <form action="${action}">
+      <section>
+        <input id="input" type="text" name="${name}" autocomplete="off" placeholder="${placeholder}">
+        <?xml version="1.0" standalone="no"?>
+        <svg id="svg" viewBox="0 0 1024 1024" version="1.1" width="24" height="24">
+          <path
+            d="M862.72 819.2l-168.96-168.96a304.128 304.128 0 1 0-43.008 43.008l168.96 168.96a30.208 30.208 0 0 0 43.008-43.008zM460.8 701.44a243.2 243.2 0 1 1 243.2-243.2A243.2 243.2 0 0 1 460.8 701.44z"
+            fill="#9aa0a6"></path>
+        </svg>
+      </section>
+    </form>
+      `
+      input.focus();
+      localStorage.setItem("option_index", i);
+    }
+
+    let n = parseInt(localStorage.getItem("option_index")) || 0;
+    let v = "";
+    createHTML(n)
+    addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (event.srcElement !== main) return;
+      main.style.border = "2px solid red";
+      setTimeout(() => {
+        main.style.border = "";
+      },50)
+      if (n === OPTIONS.length - 1) {
+        n = 0;
+      } else {
+        n++;
+      }
+      v = input.value;
+      createHTML(n)
+      input.value = v;
+    })
+
+  </script>
+</body>
+
+</html>
